@@ -11,12 +11,11 @@ conn = sqlite3.connect("arhiva_reviste.db")
 conn.row_factory = sqlite3.Row
 c = conn.cursor()
 
-template = Template("""====== LEVEL nr. $numar ($luna $an) ======
+template = Template("""$titlu
 $contribuie
 | {{ $img_coperta?direct&150 }} ||
 ^ Info ^^
-| **Pagini** | $nr_pagini |$disc_demo$joc_complet
-| **Preț** | $pret lei |$redactor_sef
+$nr_pagini$disc_demo$joc_complet$pret$supliment$redactor_sef
 $tabel_download
 $lista_redactori
 $cuprins""")
@@ -65,8 +64,7 @@ def get_downloads(editie_id, categorie):
     return sorted(downloads, key=operator.itemgetter("prioritate"))
 
 
-# TODO: suplimente?
-toate_revistele = conn.cursor().execute("SELECT * FROM editii WHERE tip = 'revista' AND revista_id = 7 ORDER BY an;")
+toate_revistele = conn.cursor().execute("SELECT * FROM editii WHERE revista_id = 7 ORDER BY an;")
 
 for e in toate_revistele:
 
@@ -76,8 +74,17 @@ for e in toate_revistele:
 
     # creeaza directoare
     os.makedirs("pages/level/%d" % e["an"], exist_ok=True)
-    os.makedirs("media/level/%d/%d" % (e["an"], e["luna"]), exist_ok=True)
+    linkpath = ":level:%d:%d" % (e["an"], e["luna"])
+    if e["tip"] == "supliment":
+        linkpath = "%s-supliment" % linkpath
+        os.makedirs("media/level/%d/%d-supliment" % (e["an"], e["luna"]), exist_ok=True)
+    else:
+        os.makedirs("media/level/%d/%d" % (e["an"], e["luna"]), exist_ok=True)
 
+
+    titlu = "====== LEVEL nr. %s (%s %s) ======" % (e["numar"], luna_string[e["luna"]], e["an"])
+    if e["tip"] == "supliment":
+        titlu = "====== Supliment LEVEL mobile (%s %s) ======" % (luna_string[e["luna"]], e["an"])
 
     contribuie = ""
     if e["scan_info_pg_lipsa"]:
@@ -91,14 +98,18 @@ for e in toate_revistele:
 
     ### tabel info ###
 
-    img_coperta = ":level:%d:%d:coperta.jpg" % (e["an"], e["luna"])
+    img_coperta = "%s:coperta.jpg" % linkpath
+
+    nr_pagini = ""
+    if e["nr_pagini"] not in (None, ""):
+        nr_pagini = "\n| **Pagini** | %d |" % e["nr_pagini"]
 
     disc_demo = ""
     if e["disc_demo"] not in (None, ""):
         if "CD" in e["disc_demo"]:
-            img_disc = ":level:%d:%d:cd.jpg" % (e["an"], e["luna"])
+            img_disc = "%s:cd.jpg" % linkpath
         elif "DVD" in e["disc_demo"]:
-            img_disc = ":level:%d:%d:dvd.jpg" % (e["an"], e["luna"])
+            img_disc = "%s:dvd.jpg" % linkpath
         else:
             print("tip de disc nou: %s" % e["disc_demo"])
             quit()
@@ -108,11 +119,23 @@ for e in toate_revistele:
     if e["joc_complet"] not in (None, ""):
         joc_complet = "\n| **Joc complet** | " + e["joc_complet"] + " |"
 
+    pret = ""
+    if e["pret"] not in (None, ""):
+        pret = "\n| **Preț** | " + str(e["pret"]) + " lei|"
+
     redactor_sef = ""
     if e["redactor_sef"] not in (None, ""):
         redactor_sef = "[[level:redactori#" + genereaza_ancora(e["redactor_sef"]) + "|" + e["redactor_sef"] + "]]"
         redactor_sef = "\n| **Redactor-șef** | " + redactor_sef + " |"
 
+    supliment = ""
+    if e["tip"] == "supliment":
+        supliment = "\n| **Revista-mamă** | [[:level:%d:%d|LEVEL (%s %d)]] |" % (e["an"], e["luna"], luna_string[e["luna"]], e["an"])
+    else:
+        c.execute("SELECT * FROM editii WHERE tip='supliment' AND parinte_editie_id = ?;", (e["editie_id"], ))
+        supl = c.fetchone()
+        if supl:
+            supliment = "\n| **Supliment** | [[" + linkpath + "-supliment|LEVEL mobile]] |"
 
     ### download revista ###
 
@@ -217,17 +240,20 @@ for e in toate_revistele:
 
     ### output pagina wiki ###
 
-    fo = open("pages/level/%d/%d.txt" % (e["an"], e["luna"]), "w")
+    if e["tip"] == "supliment":
+        fo = open("pages/level/%d/%d-supliment.txt" % (e["an"], e["luna"]), "w")
+    else:
+        fo = open("pages/level/%d/%d.txt" % (e["an"], e["luna"]), "w")
+
     fo.write(template.substitute(
-        numar = e["numar"],
-        luna = luna_string[e["luna"]],
-        an = e["an"],
+        titlu = titlu,
         contribuie = contribuie,
         img_coperta = img_coperta,
         disc_demo = disc_demo,
-        nr_pagini = e["nr_pagini"],
+        nr_pagini = nr_pagini,
         joc_complet = joc_complet,
-        pret = e["pret"],
+        pret = pret,
+        supliment = supliment,
         redactor_sef = redactor_sef,
         tabel_download = tabel_download,
         lista_redactori = lista_redactori,
