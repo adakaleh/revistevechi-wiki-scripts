@@ -76,6 +76,7 @@ for e in toate_revistele:
 
     # creeaza directoare
     os.makedirs("pages/level/%d" % e["an"], exist_ok=True)
+    os.makedirs("media/level/%d/%d" % (e["an"], e["luna"]), exist_ok=True)
 
 
     contribuie = ""
