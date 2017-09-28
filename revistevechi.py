@@ -240,9 +240,18 @@ for e in toate_revistele:
 
 pagina_principala = """https://revistevechi.blogspot.ro/2011/07/level-1997-2004-colectia-de-reviste.html
 
-https://mega.nz/#F!SxckBRQa!AZl0AUzjFQvg0AED2iWDBA
+reviste: https://mega.nz/#F!SxckBRQa!AZl0AUzjFQvg0AED2iWDBA
 
-Descriere...
+CD/DVD 1997-2002: https://mega.nz/#F!b8kwFCgQ!i0kDgPnXr0YWJPYW3BdFgA
+
+CD/DVD 2003-2006: https://mega.co.nz/#F!m5MG3C5Z!8CP3x3rnrJ_IHiTJN3FVuA
+
+Cea mai longevivă revistă de jocuri din România.
+  * https://en.wikipedia.org/wiki/LeveL#LEVEL_in_Romania
+  * https://ro.wikipedia.org/wiki/Level
+  * http://nivelul2.ro/
+
+[[level:Redactori]]
 
 """
 
