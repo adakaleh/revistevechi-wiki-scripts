@@ -7,9 +7,6 @@ import operator
 import os
 import collections
 
-if not os.path.isdir("level"):
-    os.mkdir("level")
-
 conn = sqlite3.connect("arhiva_reviste.db")
 conn.row_factory = sqlite3.Row
 c = conn.cursor()
@@ -78,8 +75,8 @@ for e in toate_revistele:
         continue
 
     # creeaza directoare
-    if not os.path.isdir("level/%d" % e["an"]):
-        os.mkdir("level/%d" % e["an"])
+    os.makedirs("pages/level/%d" % e["an"], exist_ok=True)
+
 
     contribuie = ""
     if e["scan_info_pg_lipsa"]:
@@ -213,7 +210,7 @@ for e in toate_revistele:
 
     ### output pagina wiki ###
 
-    fo = open("level/%d/%d.txt" % (e["an"], e["luna"]), "w")
+    fo = open("pages/level/%d/%d.txt" % (e["an"], e["luna"]), "w")
     fo.write(template.substitute(
         numar = e["numar"],
         luna = luna_string[e["luna"]],
@@ -271,6 +268,6 @@ for an in ani:
         l7 = l[7], l8 = l[8], l9 = l[9], l10 = l[10], l11 = l[11], l12 = l[12],
     )
 
-fo = open("level.txt", "w")
+fo = open("pages/level.txt", "w")
 fo.write(pagina_principala)
 fo.close()
