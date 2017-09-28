@@ -91,11 +91,17 @@ for e in toate_revistele:
 
     ### tabel info ###
 
-    img_coperta = ":level:%d:%d:level_%d.png" % (e["an"], e["luna"], e["numar"])
+    img_coperta = ":level:%d:%d:coperta.jpg" % (e["an"], e["luna"])
 
     disc_demo = ""
     if e["disc_demo"] not in (None, ""):
-        img_disc = ":level:%d:%d:level_disc_%d.png" % (e["an"], e["luna"], e["numar"])
+        if "CD" in e["disc_demo"]:
+            img_disc = ":level:%d:%d:cd.jpg" % (e["an"], e["luna"])
+        elif "DVD" in e["disc_demo"]:
+            img_disc = ":level:%d:%d:dvd.jpg" % (e["an"], e["luna"])
+        else:
+            print("tip de disc nou: %s" % e["disc_demo"])
+            quit()
         disc_demo = "\n| **Disc demo** | " + e["disc_demo"] + " {{" + img_disc + "?direct&20}}|" # TODO: daca sunt mai multe discuri?
 
     joc_complet = ""
@@ -260,9 +266,9 @@ for an in ani:
     l = {}
     for luna in range(1, 13):
         if luna in luni_reviste: # daca exista revista
-            l[luna] = "[[level:%d:%d|{{:level:2003:12:level200312001.jpg?nolink&100}}]]" % (an, luna)
+            l[luna] = "[[level:%(an)d:%(luna)d|{{:level:%(an)d:%(luna)d:coperta.jpg?nolink&0x144}}]]" % {"an": an, "luna": luna}
         else: # daca nu exista revista
-            l[luna] = "{{coperta_default.png?nolink&100}}"
+            l[luna] = "{{coperta_default.png?nolink&0x144}}"
 
     pagina_principala += Template(template_an).substitute(
         l1 = l[1], l2 = l[2], l3 = l[3], l4 = l[4], l5 = l[5], l6 = l[6],
