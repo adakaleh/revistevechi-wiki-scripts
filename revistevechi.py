@@ -14,8 +14,7 @@ c = conn.cursor()
 template = Template("""$titlu
 $contribuie
 | {{ $img_coperta?direct&150 }} ||
-^ Info ^^
-$nr_pagini$disc_demo$joc_complet$pret$supliment$redactor_sef
+^ Info ^^$nr_pagini$disc_demo$joc_complet$pret$supliment$redactor_sef
 $tabel_download
 $lista_redactori
 $cuprins""")
