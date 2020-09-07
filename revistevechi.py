@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import sqlite3
@@ -120,7 +121,7 @@ for e in toate_revistele:
 
     pret = ""
     if e["pret"] not in (None, ""):
-        pret = "\n| **Preț** | " + str(e["pret"]) + " lei|"
+        pret = "\n| **Preț** | " + str(e["pret"]) + " lei |"
 
     redactor_sef = ""
     if e["redactor_sef"] not in (None, ""):
@@ -218,16 +219,16 @@ for e in toate_revistele:
             rubrica = cup["rubrica"]
             cuprins += "^" + in_tabel(rubrica) + "^^^^\n"
 
-        titlu = cup["titlu"] if cup["titlu"] != "" else rubrica
+        titlu_articol = cup["titlu"] if cup["titlu"] != "" else rubrica
 
         pagina = cup["pg_toc"]
         # daca link_pagina_cuprins a fost definit, completeaza-l si foloseste-l in loc de pagina
         if link_pagina_cuprins != "":
             pagina = link_pagina_cuprins % (pagina - 1, pagina)
 
-        cuprins += Template("|$pagina|$titlu|$autor|$nota|\n").substitute(
+        cuprins += Template("|$pagina|$titlu_articol|$autor|$nota|\n").substitute(
             pagina = pagina,
-            titlu = in_tabel(titlu),
+            titlu_articol = in_tabel(titlu_articol),
             autor = cup["autor"],
             nota = in_tabel(cup["nota"]),
         )
@@ -263,21 +264,44 @@ for e in toate_revistele:
 
 ### pagina principala ###
 
-pagina_principala = """https://revistevechi.blogspot.ro/2011/07/level-1997-2004-colectia-de-reviste.html
+pagina_principala = """====== LEVEL (1997-2013) ======
 
-reviste: https://mega.nz/#F!SxckBRQa!AZl0AUzjFQvg0AED2iWDBA
-
-CD/DVD 1997-2002: https://mega.nz/#F!b8kwFCgQ!i0kDgPnXr0YWJPYW3BdFgA
-
-CD/DVD 2003-2006: https://mega.co.nz/#F!m5MG3C5Z!8CP3x3rnrJ_IHiTJN3FVuA
-
-Cea mai longevivă revistă de jocuri din România.
+Cea mai longevivă revistă de jocuri din România. Succedată de [[nivelul2|Nivelul 2]].
   * https://en.wikipedia.org/wiki/LeveL#LEVEL_in_Romania
   * https://ro.wikipedia.org/wiki/Level
-  * http://nivelul2.ro/
 
 [[level:Redactori]]
 
+  * vechiul site: [[https://web.archive.org/web/*/level.ro|level.ro]]
+  * vechiul forum: [[https://web.archive.org/web/*/forum.level.ro|forum.level.ro]]
+  * noul forum: [[https://forum.candaparerevista.ro|forum.candaparerevista.ro]]
+
+Pe site-ul http://arhiva.candaparerevista.ro/ găsiți o prezentare bine pusă la punct a arhivei Level, în care puteți căuta cu ușurință articolele care vă interesează.
+
+===== Download =====
+
+**Toate revistele**: [[https://mega.nz/#F!SxckBRQa!AZl0AUzjFQvg0AED2iWDBA|mega.nz]], [[https://www.mediafire.com/?bu2fr7w63usie|mediafire.com]], [[https://drive.google.com/drive/folders/1Yb6tQCYjfj1ogF4g2Gh0aREXAY28G2mH|drive.google.com]].
+
+[[level:Catalog CD/DVD|CD-uri și DVD-uri]]
+
+{{level:cuprinsuri_level.ods|Tabelul cuprinsurilor}}
+
+[[https://www.mediafire.com/?r4czcc8vvqe71|Colecţia de coperţi]]
+
+Serii de articole:
+  * [[https://www.scribd.com/document/27489107/Jocul-Zeul-Mileniului-III|Jocul - Zeul Mileniului III]]
+  * [[https://www.scribd.com/document/27488315/Game-Universe-Genuri|Game Universe (Genuri)]]
+  * [[https://www.scribd.com/document/27488684/Game-Universe-Redactori|Game Universe (Redactori)]]
+
+[[https://candaparerevista.ro/posts/2018/11/retrospectiva-notelor-de-10/|Notele de 10 din Level]]
+
+[[https://www.mediafire.com/?357wb905w34lw|Diverse]]
+
+[[https://www.youtube.com/watch?v=A8Ojz9Lf150|video: înregistrare de la aniversarea de 10 ani]] (Uploaded on Oct 31, 2007)
+
+[[LevelUP]] fanzine
+
+[[level:Template]] pentru contribuitori
 """
 
 ani = conn.cursor().execute("SELECT DISTINCT an FROM editii WHERE tip = 'revista' AND revista_id = 7 ORDER BY an;")
