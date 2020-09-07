@@ -1,6 +1,6 @@
 # reviste vechi - wiki scripts
 
-Script care generează paginile wiki-ului pentru revistele Level.
+Script care generează paginile [wiki-ului](https://wiki.candaparerevista.ro/) pentru revistele Level.
 
 Baza de date trebuie luată de la adresa https://github.com/adakaleh/revistevechi-db, generată executând `sh genereaza.sh db`, apoi copiată alături de revistevechi.py.
 
